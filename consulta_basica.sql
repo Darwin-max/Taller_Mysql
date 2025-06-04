@@ -28,3 +28,41 @@ WHERE empleados.salario > 2500000;
 SELECT nombre , categoria FROM productos
 WHERE categoria = 'Electrónica' 
 ORDER BY categoria ASC;
+
+-- 6.Muestra los detalles de los pedidos que están en estado "Pendiente",
+-- incluyendo el ID del pedido, el ID del cliente y la fecha del pedido.
+
+SELECT * FROM detalles_pedidos;
+SELECT * FROM pedidos;
+
+SELECT pedidos.cliente_id, pedidos.pedido_id, pedidos.fecha_pedido,
+pedidos.estado
+FROM pedidos
+WHERE estado  = 'Pendiente';
+
+-- 7. Encuentra el nombre y el precio del producto más caro en la base de datos.
+
+SELECT nombre, precio FROM productos
+WHERE precio =( SELECT MAX(precio) FROM productos);
+
+-- 8. Obtén el total de pedidos realizados por cada cliente, mostrando el ID del cliente y el total de pedidos.
+SELECT cliente_id, COUNT(*) AS total_pedidos
+FROM pedidos
+GROUP BY cliente_id;
+
+-- 9. Calcula el promedio de salario de todos los empleados en la empresa.
+
+SELECT AVG(salario) FROM empleados;
+
+-- 10. Encuentra el número de productos en cada categoría, mostrando la categoría y el número de productos.
+
+SELECT categoria, COUNT(*) FROM productos GROUP BY categoria;
+
+-- 11. Obtén una lista de productos con un precio mayor a $75 USD, 
+-- mostrando solo el nombre, el precio y su respectivo precio en USD.
+SELECT nombre, precio, (precio / 4000) AS precio_usd
+FROM productos
+WHERE (precio / 4000) > 75;
+-- 12. Lista todos los proveedores registrados.
+
+SELECT * FROM proveedores
