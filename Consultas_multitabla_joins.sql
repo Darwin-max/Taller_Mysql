@@ -103,3 +103,63 @@ SELECT empleados.empleado_id, pedidos.pedido_id
 FROM empleados
 RIGHT JOIN pedidos ON empleados.empleado_id = pedidos.empleado_id;
 
+-- 8. Calcula el total gastado en cada pedido, mostrando el ID del pedido y el total, usando `JOIN`.
+
+SELECT 
+    pedidos.pedido_id AS PedidoID,
+    pedidos.fecha_pedido AS FechaPedido,
+    SUM(detalles_pedidos.precio_unitario * detalles_pedidos.cantidad) AS TotalGastado
+FROM pedidos
+JOIN detalles_pedidos
+ON pedidos.pedido_id = detalles_pedidos.pedido_id
+GROUP BY pedidos.pedido_id, pedidos.fecha_pedido;
+
+-- 9. Realiza un `CROSS JOIN` entre clientes y productos para mostrar todas las combinaciones posibles de clientes y productos.
+
+
+SELECT *
+FROM usuarios
+CROSS JOIN productos;
+
+-- 10. Encuentra los nombres de los clientes y los productos que han comprado,
+-- si existen, incluyendo los clientes que no han realizado pedidos usando `LEFT JOIN`.
+
+SELECT
+    usuarios.usuario_id AS idUsuarios,
+    usuarios.nombre AS Nombre_usuario,
+    pedidos.estado AS Estado_del_pedido
+FROM usuarios
+LEFT JOIN pedidos
+ON usuarios.usuario_id = pedidos.cliente_id;
+
+-- 11. Listar todos los proveedores que suministran un determinado producto.
+
+SELECT
+    proveedores.proveedor_id AS idPROVEEDOR,
+    proveedores.nombre AS Proveedor,
+    productos.nombre AS Producto,
+    productos.categoria AS Categoria,
+    productos.precio AS Precio
+FROM proveedores
+JOIN proveedores_productos
+    ON proveedores.proveedor_id = proveedores_productos.proveedor_id
+JOIN productos
+    ON proveedores_productos.producto_id = productos.producto_id
+WHERE productos.nombre = 'Ratón';
+
+
+
+-- 12. Obtener todos los productos que ofrece un proveedor específico.
+SELECT
+    proveedores.proveedor_id AS idPROVEEDOR,
+    proveedores.nombre AS Proveedor,
+    productos.nombre AS Producto,
+    productos.categoria AS Categoria,
+    productos.precio AS Precio
+FROM proveedores
+JOIN proveedores_productos
+    ON proveedores.proveedor_id = proveedores_productos.proveedor_id
+JOIN productos
+    ON proveedores_productos.producto_id = productos.producto_id
+WHERE proveedores.nombre = 'Accesorios y Más S.A.S.'; 
+
