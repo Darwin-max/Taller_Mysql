@@ -69,3 +69,50 @@ WHERE productos.precio > (
     FROM productos
 )
 
+-- 7. Lista los clientes que han gastado más de $1.000.000 en total.
+
+SELECT usuarios.nombre AS Cliente
+FROM usuarios
+WHERE usuarios.usuario_id IN (
+    SELECT pedidos.cliente_id
+    FROM pedidos
+    JOIN detalles_pedidos ON pedidos.pedido_id = detalles_pedidos.pedido_id
+    GROUP BY pedidos.cliente_id
+    HAVING SUM(detalles_pedidos.cantidad * detalles_pedidos.precio_unitario) > 1000000
+);
+
+
+-- 8. Encuentra los empleados que ganan un salario mayor al promedio de la empresa.
+
+SELECT empleados.empleado_id AS EmpleadoID, empleados.salario AS Salario
+FROM empleados
+WHERE empleados.salario > (
+    SELECT AVG(salario)
+    FROM empleados
+);
+
+-- 9. Obtén los productos que generaron ingresos mayores al ingreso promedio por producto.
+
+SELECT productos.nombre AS Producto, productos.categoria AS Categoria
+FROM productos
+JOIN detalles_pedidos ON productos.producto_id = detalles_pedidos.producto_id
+GROUP BY productos.producto_id
+HAVING SUM(detalles_pedidos.cantidad * detalles_pedidos.precio_unitario) > (
+    SELECT AVG(ingreso_total) FROM (
+        SELECT SUM(cantidad * precio_unitario) AS ingreso_total
+        FROM detalles_pedidos
+        GROUP BY producto_id
+    ) AS ingresos_por_producto
+);
+
+
+-- 10. Encuentra el nombre del cliente que realizó el pedido más reciente.
+
+SELECT usuarios.nombre AS Nombre, usuarios.ciudad AS Ciudad, pedidos.fecha_pedido AS FechaPedido
+FROM usuarios
+JOIN pedidos ON usuarios.usuario_id = pedidos.cliente_id
+WHERE pedidos.fecha_pedido = (
+    SELECT MAX(fecha_pedido)
+    FROM pedidos
+);
+
