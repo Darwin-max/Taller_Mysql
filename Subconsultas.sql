@@ -11,3 +11,33 @@ WHERE usuario_id IN (
     HAVING SUM(detalles_pedidos.precio_unitario * detalles_pedidos.cantidad) > 500000
 );
 
+-- 2. Muestra los productos que nunca han sido pedidos.
+
+SELECT nombre
+FROM productos
+WHERE producto_id NOT IN (
+    SELECT producto_id
+    FROM detalles_pedidos
+);
+
+-- 3. Lista los empleados que han gestionado pedidos en los últimos seis meses.
+SELECT DISTINCT empleados.empleado_id, empleados.fecha_contratacion
+FROM empleados 
+WHERE empleados.empleado_id IN (
+    SELECT pedidos.empleado_id
+    FROM pedidos
+    WHERE pedidos.fecha_pedido >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+);
+
+
+-- 4. Encuentra el pedido con el total de ventas más alto.
+
+SELECT pedido_id,
+       (SELECT SUM(detalles_pedidos.cantidad * detalles_pedidos.precio_unitario)
+        FROM detalles_pedidos
+        WHERE detalles_pedidos.pedido_id = pedidos.pedido_id
+    )AS total_venta
+FROM pedidos
+ORDER BY total_venta DESC
+LIMIT 1;
+
