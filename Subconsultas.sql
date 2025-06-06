@@ -41,3 +41,31 @@ FROM pedidos
 ORDER BY total_venta DESC
 LIMIT 1;
 
+-- 5. Muestra los nombres de los clientes que han realizado 
+-- más pedidos que el promedio de pedidos de todos los clientes.
+
+SELECT usuarios.nombre AS Nombre
+FROM usuarios
+WHERE usuarios.usuario_id IN (
+    SELECT pedidos.cliente_id
+    FROM pedidos
+    GROUP BY pedidos.cliente_id
+    HAVING COUNT(*) > (
+        SELECT AVG(pedidos_por_cliente.total_pedidos)
+        FROM (
+            SELECT pedidos.cliente_id, COUNT(*) AS total_pedidos
+            FROM pedidos
+            GROUP BY pedidos.cliente_id
+        ) AS pedidos_por_cliente
+    )
+);
+
+-- 6. Obtén los productos cuyo precio es superior al precio promedio de todos los productos.
+
+SELECT productos.nombre AS Producto,productos.precio AS Precio
+FROM productos
+WHERE productos.precio > (
+    SELECT AVG(productos.precio) 
+    FROM productos
+)
+
